@@ -11,10 +11,20 @@ import java.util.Objects;
 
 @Service
 public class UsuarioService {
+    private static final String MSG_EMAIL = "Usuário já cadastrado com email: %s.";
     @Autowired
     UsuarioRepository usuarioRepository;
 
     public UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDTO){
+
+        Usuario usuarioEmail = usuarioRepository
+                .findByEmail(usuarioDTO.getEmail());
+
+        if (Objects.nonNull(usuarioEmail)){
+            throw new BussinesException(
+                    String.format(MSG_EMAIL,usuarioDTO.getEmail()));
+        }
+
         Usuario usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
         usuario = usuarioRepository.save(usuario);
         return converterUsuarioParaUsuarioDTO(usuario);
@@ -52,7 +62,7 @@ public class UsuarioService {
 
     public UsuarioDTO buscarUsuarioPorId(Long id){
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> new BussinesException("Usuário não encontrado"));
         return converterUsuarioParaUsuarioDTO(usuario);
     }
 
@@ -63,7 +73,7 @@ public class UsuarioService {
 
         Usuario usuario = usuarioRepository.findById(usuarioDTO.getId())
                 .orElseThrow(() ->
-                        new IllegalArgumentException("Usuário não encontrado"));
+                        new BussinesException("Usuário não encontrado"));
 
         usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
         usuarioRepository.save(usuario);
