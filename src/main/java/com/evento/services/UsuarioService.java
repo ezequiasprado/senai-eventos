@@ -9,9 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
+import static java.util.Objects.*;
+
 @Service
 public class UsuarioService {
     private static final String MSG_EMAIL = "Usuário já cadastrado com email: %s.";
+    private static final String MSG_CPF = "Usuário já cadastrado com cpf: %s.";
+
     @Autowired
     UsuarioRepository usuarioRepository;
 
@@ -20,9 +24,17 @@ public class UsuarioService {
         Usuario usuarioEmail = usuarioRepository
                 .findByEmail(usuarioDTO.getEmail());
 
-        if (Objects.nonNull(usuarioEmail)){
+        if (nonNull(usuarioEmail)){
             throw new BussinesException(
                     String.format(MSG_EMAIL,usuarioDTO.getEmail()));
+        }
+
+        Usuario usuarioCpf = usuarioRepository
+                .findByCpf(usuarioDTO.getCpf());
+
+        if (nonNull(usuarioCpf)){
+            throw new BussinesException(
+                    String.format(MSG_CPF,usuarioDTO.getCpf()));
         }
 
         Usuario usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
@@ -68,7 +80,7 @@ public class UsuarioService {
 
     public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO){
 
-        if (Objects.isNull(usuarioDTO.getId()))
+        if (isNull(usuarioDTO.getId()))
             throw new BussinesException("Id não pode ser nulo");
 
         Usuario usuario = usuarioRepository.findById(usuarioDTO.getId())
