@@ -14,7 +14,6 @@ import static java.util.Objects.*;
 
 @Service
 public class UsuarioService {
-    private static final String MSG_CPF = "Usuário já cadastrado com cpf: %s.";
 
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -23,19 +22,11 @@ public class UsuarioService {
     private UsuarioSpec usuarioSpec;
 
     public UsuarioDTO cadastrarUsuario(UsuarioDTO usuarioDTO){
-
-        Usuario usuarioEmail = usuarioRepository
-                .findByEmail(usuarioDTO.getEmail());
-
+        Usuario usuarioEmail = usuarioRepository.findByEmail(usuarioDTO.getEmail());
         usuarioSpec.verificarSeExisteUsuarioComEmailDuplicado(usuarioEmail);
 
-        Usuario usuarioCpf = usuarioRepository
-                .findByCpf(usuarioDTO.getCpf());
-
-        if (nonNull(usuarioCpf)){
-            throw new BussinesException(
-                    String.format(MSG_CPF,usuarioDTO.getCpf()));
-        }
+        Usuario usuarioCpf = usuarioRepository.findByCpf(usuarioDTO.getCpf());
+        usuarioSpec.verificarSeExisteUsuarioComCpfDuplicado(usuarioCpf);
 
         Usuario usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
         usuario = usuarioRepository.save(usuario);
@@ -80,12 +71,20 @@ public class UsuarioService {
 
     public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO){
 
-        if (isNull(usuarioDTO.getId()))
+        if (isNull(usuarioDTO.getId())) {
             throw new BussinesException("Id não pode ser nulo");
+        }
+
 
         Usuario usuario = usuarioRepository.findById(usuarioDTO.getId())
                 .orElseThrow(() ->
                         new BussinesException("Usuário não encontrado"));
+
+        if ((!(usuario.getEmail().equals(usuarioDTO.getEmail())))
+                && (nonNull(usuarioRepository.findByEmail(usuarioDTO.getEmail())))){
+            throw new BussinesException(String.format("Usuário já cadastrado com email: %s",
+                    usuarioDTO.getEmail()));
+        }
 
         usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
         usuarioRepository.save(usuario);

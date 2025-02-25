@@ -8,13 +8,20 @@ import static java.util.Objects.nonNull;
 
 @Service
 public class UsuarioSpec {
-
+    private static final String MSG_CPF = "Usuário já cadastrado com cpf: %s.";
     private static final String MSG_EMAIL = "Usuário já cadastrado com email: %s.";
 
     public void verificarSeExisteUsuarioComEmailDuplicado(Usuario usuario){
         if (nonNull(usuario)){
             throw new BussinesException(
                     String.format(MSG_EMAIL,usuario.getEmail()));
+        }
+    }
+
+    public void verificarSeExisteUsuarioComCpfDuplicado(Usuario usuario){
+        if (nonNull(usuario)){
+            throw new BussinesException(
+                    String.format(MSG_CPF,usuario.getCpf()));
         }
     }
 }
