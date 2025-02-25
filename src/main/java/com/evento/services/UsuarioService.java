@@ -14,6 +14,7 @@ import static java.util.Objects.*;
 
 @Service
 public class UsuarioService {
+    private static final String MSG_USUARIO = "Usuário não encontrado";
 
     @Autowired
     UsuarioRepository usuarioRepository;
@@ -65,25 +66,28 @@ public class UsuarioService {
 
     public UsuarioDTO buscarUsuarioPorId(Long id){
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new BussinesException("Usuário não encontrado"));
+                .orElseThrow(() -> new BussinesException(MSG_USUARIO));
         return converterUsuarioParaUsuarioDTO(usuario);
     }
 
     public UsuarioDTO atualizarUsuario(UsuarioDTO usuarioDTO){
 
-        if (isNull(usuarioDTO.getId())) {
-            throw new BussinesException("Id não pode ser nulo");
-        }
-
+       usuarioSpec.verificarCampoIdNulo(usuarioDTO.getId());
 
         Usuario usuario = usuarioRepository.findById(usuarioDTO.getId())
                 .orElseThrow(() ->
-                        new BussinesException("Usuário não encontrado"));
+                        new BussinesException(MSG_USUARIO));
 
         if ((!(usuario.getEmail().equals(usuarioDTO.getEmail())))
                 && (nonNull(usuarioRepository.findByEmail(usuarioDTO.getEmail())))){
             throw new BussinesException(String.format("Usuário já cadastrado com email: %s",
                     usuarioDTO.getEmail()));
+        }
+
+        if ((!(usuario.getCpf().equals(usuarioDTO.getCpf())))
+            && (nonNull(usuarioRepository.findByCpf(usuarioDTO.getCpf())))){
+            throw new BussinesException(String.format("Usuário já cadastrado com cpf: %s",
+                    usuarioDTO.getCpf()));
         }
 
         usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
