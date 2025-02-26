@@ -78,17 +78,8 @@ public class UsuarioService {
                 .orElseThrow(() ->
                         new BussinesException(MSG_USUARIO));
 
-        if ((!(usuario.getEmail().equals(usuarioDTO.getEmail())))
-                && (nonNull(usuarioRepository.findByEmail(usuarioDTO.getEmail())))){
-            throw new BussinesException(String.format("Usuário já cadastrado com email: %s",
-                    usuarioDTO.getEmail()));
-        }
-
-        if ((!(usuario.getCpf().equals(usuarioDTO.getCpf())))
-            && (nonNull(usuarioRepository.findByCpf(usuarioDTO.getCpf())))){
-            throw new BussinesException(String.format("Usuário já cadastrado com cpf: %s",
-                    usuarioDTO.getCpf()));
-        }
+        usuarioSpec.verificarEmailEmUso(usuario, usuarioDTO);
+        usuarioSpec.verificarCpfEmUso(usuario, usuarioDTO);
 
         usuario = converterUsuarioDTOParaUsuario(usuarioDTO);
         usuarioRepository.save(usuario);

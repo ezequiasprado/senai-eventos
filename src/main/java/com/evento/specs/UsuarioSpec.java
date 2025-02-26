@@ -50,4 +50,12 @@ public class UsuarioSpec {
                         usuarioDTO.getEmail()));
         }
     }
+
+    public void verificarCpfEmUso(Usuario usuario, UsuarioDTO usuarioDTO) {
+        if ((!(usuario.getCpf().equals(usuarioDTO.getCpf())))
+                && (nonNull(usuarioRepository.findByCpf(usuarioDTO.getCpf())))){
+            throw new BussinesException(String.format(MSG_CPF,
+                    usuarioDTO.getCpf()));
+        }
+    }
 }
