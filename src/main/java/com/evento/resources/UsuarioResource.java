@@ -1,7 +1,6 @@
 package com.evento.resources;
 
 import com.evento.dtos.UsuarioDTO;
-import com.evento.models.Usuario;
 import com.evento.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
