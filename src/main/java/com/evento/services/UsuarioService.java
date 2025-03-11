@@ -1,6 +1,7 @@
 package com.evento.services;
 
 import com.evento.dtos.UsuarioDTO;
+import com.evento.enums.Perfil;
 import com.evento.exceptions.BussinesException;
 import com.evento.models.Usuario;
 import com.evento.repositories.UsuarioRepository;
@@ -8,6 +9,8 @@ import com.evento.specs.UsuarioSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.*;
