@@ -28,7 +28,7 @@ public class EnderecoService {
         return converterEnderecoParaEnderecoDTO(endereco);
     }
 
-    private EnderecoDTO converterEnderecoParaEnderecoDTO(Endereco endereco) {
+    public EnderecoDTO converterEnderecoParaEnderecoDTO(Endereco endereco) {
         EnderecoDTO enderecoDTO = new EnderecoDTO();
         enderecoDTO.setId(endereco.getId());
         enderecoDTO.setNumero(endereco.getNumero());
